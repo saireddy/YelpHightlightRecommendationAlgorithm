@@ -1,0 +1,26 @@
+Algorithm for finding and highlighting most relevant code snippet
+1 Split the search string into tokens using a predefined set of delimiters
+Example: search string = “deep dish pizza is amazing”
+possible delimiters = { “ “, “,”,”:”,”;”}
+tokens={deep, dish, pizza, is , amazing}
+2 Construct a keyword list by removing non-qualitative words(words that do not add value to search) from the set of tokens from step1
+Example: search string = “deep dish pizza is amazing”
+non-qualitative words = {is, a, an}
+keywords={deep,dish,pizza,amazing}
+3 Construct map of keyword combinations(from keyword list in step2) and lengths
+Example:keywords={deep,dish,pizza,amazing}
+keyword combination ={
+length 4 -> deep dish pizza amazing,
+length 3 -> deep dish pizza, deep dish amazing, deep pizza amazing, dish pizza amazing,
+length 2-> deep dish, deep pizza, deep amazing, dish pizza, dish amazing, pizza amazing
+length 1-> deep, dish, pizza, amazing
+4 Search for all occurrences of highest length combination. We search in descending order of keyword length, when a match of length ‘l’ is found, we continue our search until all keyword combinations of length ‘l’ are searched(from the map constructed in step 3). For each match of combination we construct a map with keyword and list with start indexes of that keyword in the document given to search
+For example: if doc = “I like pizzas, especially deep dish pizza. They are amazing way to get all nutrition in one bite. The domino’s pizza ”
+search string = deep dish pizza
+will return map with key as deep dish pizza and value start index of deep dish pizza in above string
+This is done for better performance(instead of searching for all occurences) we exit once we find best possible length search string combination
+5 For each keyword present in map constructed in step 4 we iterate over the list of occurences(using startindexes present as values in map) and  use three scan methods: back,forward and mid scan from the keyword occurence to select the string which has maximum count of all keywords. For practical purposes we need to restrict the scan to MAX_LENGTH which can be set. By default I set it to 100, which means it scans 100 characters and looks for all keyword occurences in this scope.
+This process I am calling proximity search (since we search in proximity of already found keyword)  The string with maximum keyword count is returned after this step
+6 We have selected relevant docsnippet to display, only part left is padding, this can be done by iterating over the words in doc snippet and checking if it matches search keyword if so add the padding.
+
+
